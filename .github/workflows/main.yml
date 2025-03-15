@@ -1,0 +1,104 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: qingyu_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install Dependencies
+      run: pnpm install
+      
+    - name: Run Backend Tests
+      working-directory: packages/backend
+      run: |
+        cp .env.example .env
+        pnpm test
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_USERNAME: root
+        DB_PASSWORD: root
+        DB_DATABASE: qingyu_test
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+        
+    - name: Run Frontend Tests
+      working-directory: packages/frontend
+      run: |
+        cp .env.example .env
+        pnpm test
+        
+    - name: Run Lint
+      run: pnpm lint
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install Dependencies
+      run: pnpm install
+      
+    - name: Build Backend
+      working-directory: packages/backend
+      run: pnpm build
+      
+    - name: Build Frontend
+      working-directory: packages/frontend
+      run: pnpm build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to Production
+      run: echo "Deploy step - configure according to your deployment strategy" 
