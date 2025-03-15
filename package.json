@@ -1,0 +1,16 @@
+{
+  "name": "qingyu",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "start": "pnpm -r run start",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "format": "pnpm -r run format"
+  },
+  "devDependencies": {
+    "@shadcn/ui": "^0.0.4"
+  }
+}

@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      .container { 
+        max-width: 600px; 
+        margin: 0 auto; 
+        padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #0070f3;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .footer {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eaeaea;
+        text-align: center;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>您好，{{name}}！</h2>
+      <p>感谢您注册轻语。请点击下面的按钮验证您的邮箱地址：</p>
+      <a href="{{url}}" class="button">验证邮箱</a>
+      <p>如果您没有注册轻语账户，请忽略此邮件。</p>
+      <div class="footer">
+        <p>此邮件由系统自动发送，请勿回复。</p>
+      </div>
+    </div>
+  </body>
+</html>
